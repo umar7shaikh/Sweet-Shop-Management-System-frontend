@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { sweetsAPI } from '../services/api';
-import SweetCard from '../components/SweetCard';
+import { sweetsAPI } from '@/services/api';
+import SweetCard from '@/components/SweetCard';
 import { Search, Filter, Loader } from 'lucide-react';
 
 const Dashboard = () => {

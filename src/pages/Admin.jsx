@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { sweetsAPI } from '../services/api';
-import SweetCard from '../components/SweetCard';
+import { sweetsAPI } from '@/services/api';
+import SweetCard from '@/components/SweetCard';
 import { Plus, Loader, X } from 'lucide-react';
 
 const Admin = () => {
