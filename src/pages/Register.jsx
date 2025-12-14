@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useAuth } from '@/context/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { authAPI } from '@/services/api';
 import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
@@ -8,28 +7,28 @@ const Register = () => {
   const [formData, setFormData] = useState({ 
     name: '', 
     email: '', 
-    password: '', 
-    role: 'customer' 
+    password: ''
   });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   
-  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setError('');
+    setLoading(true);
 
     try {
-      const response = await authAPI.register(formData);
-      const { token, user } = response.data;
+      await authAPI.register({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password
+      });
       
-      localStorage.setItem('token', token);
-      login(user);
-      navigate('/dashboard');
+      // Registration successful - redirect to login
+      navigate('/login');
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed');
     } finally {

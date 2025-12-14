@@ -11,11 +11,9 @@ const Admin = () => {
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
-    description: '',
-    price: '',
-    stock: '',
     category: '',
-    image: ''
+    price: '',
+    quantity: '0'
   });
 
   useEffect(() => {
@@ -26,9 +24,9 @@ const Admin = () => {
     try {
       setLoading(true);
       const response = await sweetsAPI.getAll();
-      // Handle both array and object responses
-      const sweetsData = Array.isArray(response.data) ? response.data : response.data?.data || [];
-      setSweets(sweetsData);
+      // Backend returns { sweets: [...] }
+      const sweetsData = response.data?.sweets || response.data || [];
+      setSweets(Array.isArray(sweetsData) ? sweetsData : []);
       setError('');
     } catch (err) {
       setError('Failed to load sweets. Please try again.');
@@ -49,20 +47,27 @@ const Admin = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
+      const quantity = parseInt(formData.quantity, 10);
+      if (Number.isNaN(quantity) || quantity < 0) {
+        setError('Quantity must be a non-negative integer');
+        return;
+      }
+
       const sweetData = {
-        ...formData,
+        name: formData.name,
+        category: formData.category,
         price: parseFloat(formData.price),
-        stock: parseInt(formData.stock)
+        quantity
       };
 
       if (editingId) {
         await sweetsAPI.update(editingId, sweetData);
-        setSweets(sweets.map(s => s.id === editingId ? { ...s, ...sweetData } : s));
+        setSweets(sweets.map(s => s._id === editingId ? { ...s, ...sweetData } : s));
       } else {
         const response = await sweetsAPI.create(sweetData);
-        setSweets([...sweets, response.data]);
+        setSweets([...sweets, response.data?.sweet || response.data]);
       }
 
       resetForm();
@@ -75,13 +80,11 @@ const Admin = () => {
   const handleEdit = (sweet) => {
     setFormData({
       name: sweet.name,
-      description: sweet.description,
-      price: sweet.price,
-      stock: sweet.stock,
       category: sweet.category,
-      image: sweet.image || ''
+      price: sweet.price,
+      quantity: String(sweet.quantity || '0')
     });
-    setEditingId(sweet.id);
+    setEditingId(sweet._id);
     setShowForm(true);
   };
 
@@ -89,7 +92,7 @@ const Admin = () => {
     if (window.confirm('Are you sure you want to delete this sweet?')) {
       try {
         await sweetsAPI.delete(id);
-        setSweets(sweets.filter(s => s.id !== id));
+        setSweets(sweets.filter(s => s._id !== id));
         setError('');
       } catch (err) {
         setError('Failed to delete sweet. Please try again.');
@@ -100,11 +103,9 @@ const Admin = () => {
   const resetForm = () => {
     setFormData({
       name: '',
-      description: '',
-      price: '',
-      stock: '',
       category: '',
-      image: ''
+      price: '',
+      quantity: '0'
     });
     setEditingId(null);
     setShowForm(false);
@@ -161,7 +162,7 @@ const Admin = () => {
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
-                placeholder="e.g., Chocolate Truffle"
+                placeholder="e.g., Gulab Jamun"
                 required
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
@@ -176,28 +177,15 @@ const Admin = () => {
                 name="category"
                 value={formData.category}
                 onChange={handleInputChange}
-                placeholder="e.g., Chocolate"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-              />
-            </div>
-
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Description
-              </label>
-              <textarea
-                name="description"
-                value={formData.description}
-                onChange={handleInputChange}
-                placeholder="Describe your sweet..."
-                rows="3"
+                placeholder="e.g., Traditional"
+                required
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Price ($)
+                Price (₹)
               </label>
               <input
                 type="number"
@@ -213,29 +201,15 @@ const Admin = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Stock Quantity
+                Quantity in Stock
               </label>
               <input
                 type="number"
-                name="stock"
-                value={formData.stock}
+                name="quantity"
+                value={formData.quantity}
                 onChange={handleInputChange}
                 placeholder="0"
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-              />
-            </div>
-
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Image URL
-              </label>
-              <input
-                type="url"
-                name="image"
-                value={formData.image}
-                onChange={handleInputChange}
-                placeholder="https://example.com/image.jpg"
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
@@ -273,10 +247,11 @@ const Admin = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {sweets.map(sweet => (
             <SweetCard
-              key={sweet.id}
+              key={sweet._id}
               sweet={sweet}
               onEdit={handleEdit}
               onDelete={handleDelete}
+              isAdmin={true}
             />
           ))}
         </div>

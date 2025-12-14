@@ -1,10 +1,13 @@
 import { useAuth } from '@/context/AuthContext';
+import { useCart } from '@/context/CartContext';
 import { Link, useLocation } from 'react-router-dom';
 import { LogOut, ShoppingCart } from 'lucide-react';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
+  const { getTotalItems } = useCart();
   const location = useLocation();
+  const cartItems = getTotalItems();
 
   return (
     <nav className="bg-white/80 backdrop-blur-md shadow-lg border-b border-orange-100">
@@ -21,10 +24,24 @@ const Navbar = () => {
                   Admin Panel
                 </Link>
               )}
-              <Link to="/dashboard" className={`px-4 py-2 rounded-lg font-medium flex items-center ${location.pathname === '/dashboard' ? 'bg-orange-100 text-orange-700' : 'text-gray-600 hover:text-orange-600'}`}>
-                <ShoppingCart size={20} />
-              </Link>
-              <button onClick={logout} className="flex items-center space-x-1 text-gray-600 hover:text-red-600 transition-colors">
+              {user.role === 'customer' && (
+                <>
+                  <Link to="/dashboard" className={`px-4 py-2 rounded-lg font-medium ${location.pathname === '/dashboard' ? 'bg-orange-100 text-orange-700' : 'text-gray-600 hover:text-orange-600'}`}>
+                    Shop
+                  </Link>
+                  <Link to="/cart" className="relative">
+                    <div className={`px-4 py-2 rounded-lg font-medium flex items-center ${location.pathname === '/cart' ? 'text-orange-700' : 'text-gray-600 hover:text-orange-600'}`}>
+                      <ShoppingCart size={20} />
+                      {cartItems > 0 && (
+                        <span className="absolute -top-1 -right-2 bg-red-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
+                          {cartItems}
+                        </span>
+                      )}
+                    </div>
+                  </Link>
+                </>
+              )}
+              <button onClick={logout} className="flex items-center space-x-1 text-gray-600 hover:text-red-600 transition-colors" title="Logout">
                 <LogOut size={20} />
               </button>
             </div>

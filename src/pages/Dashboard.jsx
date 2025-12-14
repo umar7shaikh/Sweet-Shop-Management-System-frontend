@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { sweetsAPI } from '@/services/api';
 import SweetCard from '@/components/SweetCard';
 import { useAuth } from '@/context/AuthContext';
-import { Search, Filter } from 'lucide-react';
+import { useCart } from '@/context/CartContext';
+import { Search, Filter, ShoppingCart } from 'lucide-react';
 
 const Dashboard = () => {
   const [sweets, setSweets] = useState([]);
@@ -11,7 +13,8 @@ const Dashboard = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [cart, setCart] = useState([]);
+  const { cart, addToCart, getTotalPrice, getTotalItems } = useCart();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchSweets();
@@ -25,9 +28,9 @@ const Dashboard = () => {
     try {
       setLoading(true);
       const response = await sweetsAPI.getAll();
-      // Handle both array and object responses
-      const sweetsData = Array.isArray(response.data) ? response.data : response.data?.data || [];
-      setSweets(sweetsData);
+      // Backend returns { sweets: [...] }
+      const sweetsData = response.data?.sweets || response.data || [];
+      setSweets(Array.isArray(sweetsData) ? sweetsData : []);
       setError('');
     } catch (err) {
       setError('Failed to load sweets. Please try again.');
@@ -44,7 +47,7 @@ const Dashboard = () => {
     if (searchTerm) {
       filtered = filtered.filter(sweet =>
         sweet.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        sweet.description?.toLowerCase().includes(searchTerm.toLowerCase())
+        sweet.category?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
@@ -56,15 +59,7 @@ const Dashboard = () => {
   };
 
   const handleAddToCart = (sweet) => {
-    setCart(prev => {
-      const existing = prev.find(item => item._id === sweet._id);
-      if (existing) {
-        return prev.map(item =>
-          item._id === sweet._id ? { ...item, quantity: item.quantity + 1 } : item
-        );
-      }
-      return [...prev, { ...sweet, quantity: 1 }];
-    });
+    addToCart(sweet, 1);
   };
 
   const categories = ['all', ...new Set((sweets || []).map(sweet => sweet.category).filter(Boolean))];
@@ -147,23 +142,36 @@ const Dashboard = () => {
           {/* Cart Summary */}
           {cart.length > 0 && (
             <div className="fixed bottom-8 right-8 bg-white rounded-2xl shadow-2xl p-6 max-w-sm">
-              <h3 className="text-xl font-bold mb-4">Shopping Cart ({cart.length})</h3>
+              <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <ShoppingCart size={24} /> Cart ({getTotalItems()})
+              </h3>
               <div className="space-y-2 mb-4 max-h-48 overflow-y-auto">
                 {cart.map(item => (
                   <div key={item._id} className="flex justify-between text-sm">
-                    <span>{item.name} x{item.quantity}</span>
-                    <span className="font-semibold">${(item.price * item.quantity).toFixed(2)}</span>
+                    <span>{item.name} x{item.cartQuantity}</span>
+                    <span className="font-semibold">₹{(item.price * item.cartQuantity).toFixed(2)}</span>
                   </div>
                 ))}
               </div>
               <div className="border-t pt-4">
                 <p className="text-lg font-bold text-right">
-                  Total: ${cart.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2)}
+                  Total: ₹{getTotalPrice().toFixed(2)}
                 </p>
               </div>
-              <button className="w-full mt-4 py-3 bg-gradient-to-r from-orange-500 to-pink-500 text-white font-semibold rounded-lg hover:from-orange-600 hover:to-pink-600 transition-all">
-                Checkout
-              </button>
+              <div className="flex gap-2 mt-4">
+                <button
+                  onClick={() => navigate('/cart')}
+                  className="flex-1 py-3 bg-orange-100 text-orange-600 font-semibold rounded-lg hover:bg-orange-200 transition-all"
+                >
+                  View Cart
+                </button>
+                <button
+                  onClick={() => navigate('/checkout')}
+                  className="flex-1 py-3 bg-gradient-to-r from-orange-500 to-pink-500 text-white font-semibold rounded-lg hover:from-orange-600 hover:to-pink-600 transition-all"
+                >
+                  Checkout
+                </button>
+              </div>
             </div>
           )}
         </>
