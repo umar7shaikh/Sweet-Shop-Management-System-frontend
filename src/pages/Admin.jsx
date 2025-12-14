@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { sweetsAPI } from '@/services/api';
 import SweetCard from '@/components/SweetCard';
-import { Plus, Loader, X } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
 
 const Admin = () => {
   const [sweets, setSweets] = useState([]);
@@ -26,10 +26,13 @@ const Admin = () => {
     try {
       setLoading(true);
       const response = await sweetsAPI.getAll();
-      setSweets(response.data);
+      // Handle both array and object responses
+      const sweetsData = Array.isArray(response.data) ? response.data : response.data?.data || [];
+      setSweets(sweetsData);
       setError('');
     } catch (err) {
       setError('Failed to load sweets. Please try again.');
+      setSweets([]);
       console.error(err);
     } finally {
       setLoading(false);
@@ -259,7 +262,7 @@ const Admin = () => {
       {/* Loading State */}
       {loading ? (
         <div className="flex justify-center items-center h-96">
-          <Loader size={48} className="animate-spin text-orange-500" />
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
         </div>
       ) : sweets.length === 0 ? (
         <div className="text-center py-12 bg-white rounded-2xl">

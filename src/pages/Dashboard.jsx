@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { sweetsAPI } from '@/services/api';
 import SweetCard from '@/components/SweetCard';
-import { Search, Filter, Loader } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+import { Search, Filter } from 'lucide-react';
 
 const Dashboard = () => {
   const [sweets, setSweets] = useState([]);
@@ -24,10 +25,13 @@ const Dashboard = () => {
     try {
       setLoading(true);
       const response = await sweetsAPI.getAll();
-      setSweets(response.data);
+      // Handle both array and object responses
+      const sweetsData = Array.isArray(response.data) ? response.data : response.data?.data || [];
+      setSweets(sweetsData);
       setError('');
     } catch (err) {
       setError('Failed to load sweets. Please try again.');
+      setSweets([]);
       console.error(err);
     } finally {
       setLoading(false);
@@ -53,17 +57,17 @@ const Dashboard = () => {
 
   const handleAddToCart = (sweet) => {
     setCart(prev => {
-      const existing = prev.find(item => item.id === sweet.id);
+      const existing = prev.find(item => item._id === sweet._id);
       if (existing) {
         return prev.map(item =>
-          item.id === sweet.id ? { ...item, quantity: item.quantity + 1 } : item
+          item._id === sweet._id ? { ...item, quantity: item.quantity + 1 } : item
         );
       }
       return [...prev, { ...sweet, quantity: 1 }];
     });
   };
 
-  const categories = ['all', ...new Set(sweets.map(sweet => sweet.category).filter(Boolean))];
+  const categories = ['all', ...new Set((sweets || []).map(sweet => sweet.category).filter(Boolean))];
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -120,7 +124,7 @@ const Dashboard = () => {
       {/* Loading State */}
       {loading ? (
         <div className="flex justify-center items-center h-96">
-          <Loader size={48} className="animate-spin text-orange-500" />
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
         </div>
       ) : filteredSweets.length === 0 ? (
         <div className="text-center py-12">
@@ -133,7 +137,7 @@ const Dashboard = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
             {filteredSweets.map(sweet => (
               <SweetCard
-                key={sweet.id}
+                key={sweet._id}
                 sweet={sweet}
                 onAddToCart={handleAddToCart}
               />
@@ -146,7 +150,7 @@ const Dashboard = () => {
               <h3 className="text-xl font-bold mb-4">Shopping Cart ({cart.length})</h3>
               <div className="space-y-2 mb-4 max-h-48 overflow-y-auto">
                 {cart.map(item => (
-                  <div key={item.id} className="flex justify-between text-sm">
+                  <div key={item._id} className="flex justify-between text-sm">
                     <span>{item.name} x{item.quantity}</span>
                     <span className="font-semibold">${(item.price * item.quantity).toFixed(2)}</span>
                   </div>
