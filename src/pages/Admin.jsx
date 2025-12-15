@@ -13,7 +13,8 @@ const Admin = () => {
     name: '',
     category: '',
     price: '',
-    quantity: '0'
+    quantity: '0',
+    image: ''
   });
 
   useEffect(() => {
@@ -59,7 +60,8 @@ const Admin = () => {
         name: formData.name,
         category: formData.category,
         price: parseFloat(formData.price),
-        quantity
+        quantity,
+        image: formData.image || ''
       };
 
       if (editingId) {
@@ -82,7 +84,8 @@ const Admin = () => {
       name: sweet.name,
       category: sweet.category,
       price: sweet.price,
-      quantity: String(sweet.quantity || '0')
+      quantity: String(sweet.quantity || '0'),
+      image: sweet.image || ''
     });
     setEditingId(sweet._id);
     setShowForm(true);
@@ -105,25 +108,24 @@ const Admin = () => {
       name: '',
       category: '',
       price: '',
-      quantity: '0'
+      quantity: '0',
+      image: ''
     });
     setEditingId(null);
     setShowForm(false);
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 min-h-screen">
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-orange-500 to-pink-500 bg-clip-text text-transparent">
-            🔧 Admin Panel
-          </h1>
-          <p className="text-gray-600">Manage your sweet collection</p>
+          <h1 className="text-4xl font-bold text-slate-900">Inventory Management</h1>
+          <p className="text-slate-600 mt-2">Manage your sweet collection</p>
         </div>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white font-semibold rounded-lg hover:from-green-600 hover:to-emerald-600 transition-all"
+          className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all shadow-md hover:shadow-lg"
         >
           <Plus size={20} />
           Add Sweet
@@ -132,21 +134,21 @@ const Admin = () => {
 
       {/* Error Message */}
       {error && (
-        <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+        <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
           {error}
         </div>
       )}
 
       {/* Add/Edit Form */}
       {showForm && (
-        <div className="mb-8 bg-white rounded-2xl shadow-xl p-8">
+        <div className="mb-8 bg-white rounded-xl shadow-lg p-8 border border-slate-100">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold">
+            <h2 className="text-2xl font-bold text-slate-900">
               {editingId ? 'Edit Sweet' : 'Add New Sweet'}
             </h2>
             <button
               onClick={resetForm}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-2 hover:bg-slate-100 rounded-lg transition-colors text-slate-600"
             >
               <X size={24} />
             </button>
@@ -154,9 +156,7 @@ const Admin = () => {
 
           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Name
-              </label>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">Name</label>
               <input
                 type="text"
                 name="name"
@@ -164,14 +164,12 @@ const Admin = () => {
                 onChange={handleInputChange}
                 placeholder="e.g., Gulab Jamun"
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Category
-              </label>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">Category</label>
               <input
                 type="text"
                 name="category"
@@ -179,14 +177,12 @@ const Admin = () => {
                 onChange={handleInputChange}
                 placeholder="e.g., Traditional"
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Price (₹)
-              </label>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">Price (₹)</label>
               <input
                 type="number"
                 step="0.01"
@@ -195,14 +191,12 @@ const Admin = () => {
                 onChange={handleInputChange}
                 placeholder="0.00"
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Quantity in Stock
-              </label>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">Quantity in Stock</label>
               <input
                 type="number"
                 name="quantity"
@@ -210,21 +204,38 @@ const Admin = () => {
                 onChange={handleInputChange}
                 placeholder="0"
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               />
+            </div>
+
+            <div className="md:col-span-2">
+              <label className="block text-sm font-semibold text-slate-700 mb-2">Image URL</label>
+              <input
+                type="url"
+                name="image"
+                value={formData.image}
+                onChange={handleInputChange}
+                placeholder="https://example.com/image.jpg"
+                className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              />
+              {formData.image && (
+                <div className="mt-3 rounded-lg overflow-hidden border border-slate-200">
+                  <img src={formData.image} alt="Preview" className="w-full h-48 object-cover" onError={(e) => e.target.style.display = 'none'} />
+                </div>
+              )}
             </div>
 
             <div className="md:col-span-2 flex gap-3">
               <button
                 type="submit"
-                className="flex-1 py-3 bg-gradient-to-r from-orange-500 to-pink-500 text-white font-semibold rounded-lg hover:from-orange-600 hover:to-pink-600 transition-all"
+                className="flex-1 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all shadow-md hover:shadow-lg"
               >
                 {editingId ? 'Update Sweet' : 'Add Sweet'}
               </button>
               <button
                 type="button"
                 onClick={resetForm}
-                className="flex-1 py-3 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors"
+                className="flex-1 py-3 border-2 border-slate-300 text-slate-700 font-semibold rounded-lg hover:bg-slate-50 transition-colors"
               >
                 Cancel
               </button>

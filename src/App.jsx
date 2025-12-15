@@ -15,7 +15,7 @@ function App() {
     <AuthProvider>
       <CartProvider>
         <BrowserRouter>
-          <div className="min-h-screen bg-gradient-to-br from-orange-50 to-pink-50">
+          <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-blue-50">
             <Navbar />
             <Routes>
               <Route path="/login" element={<Login />} />
