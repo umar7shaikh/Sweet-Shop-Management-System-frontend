@@ -1,386 +1,286 @@
-Sweet Shop Management System – Frontend
-A modern single-page application (SPA) built with React, Vite, and Tailwind CSS for managing a Sweet Shop. It connects to the existing Node.js/Express + MongoDB backend and provides separate experiences for customers and admins.
+# 🍬 Sweet Shop Management System – Frontend
 
-Table of Contents
-Features
+<div align="center">
 
-Customer
+**A modern React-based e-commerce platform for managing and browsing premium sweets**
 
-Admin
+[![React](https://img.shields.io/badge/React-18+-blue?logo=react)](https://react.dev)
+[![Vite](https://img.shields.io/badge/Vite-Latest-purple?logo=vite)](https://vitejs.dev)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-v3-06B6D4?logo=tailwindcss)](https://tailwindcss.com)
+[![License](https://img.shields.io/badge/License-MIT-green)](#license)
 
-Tech Stack
+[Features](#-features) • [Tech Stack](#-tech-stack) • [Quick Start](#-quick-start) • [Documentation](#-documentation)
 
-Project Structure
+</div>
 
-Backend Setup
+---
 
-Seeding Admin User & Sweets
+## 📸 Screenshots & Demo
 
-Frontend Setup
+<div align="center">
+  <img src="./public/1.png" width="24%" alt="Screen 1">
+  <img src="./public/2.png" width="24%" alt="Screen 2">
+  <img src="./public/3.png" width="24%" alt="Screen 3">
+  <img src="./public/4.png" width="24%" alt="Screen 4">
+</div>
 
-Environment & API Config
+<div align="center">
+  <img src="./public/5.png" width="24%" alt="Screen 5">
+  <img src="./public/6.png" width="24%" alt="Screen 6">
+  <img src="./public/7.png" width="24%" alt="Screen 7">
+  <img src="./public/8.png" width="24%" alt="Screen 8">
+</div>
 
-Usage Guide
+<div align="center">
+  <img src="./public/9.png" width="32%" alt="Screen 9">
+  <img src="./public/10.png" width="32%" alt="Screen 10">
+  <img src="./public/11.png" width="32%" alt="Screen 11">
+</div>
 
-Authentication Flow
+---
 
-Customer Dashboard
+## ✨ Features
 
-Admin Panel
+### 👥 **Customer Features**
+- ✅ Register and login with email/password
+- ✅ Browse sweets in responsive grid layout
+- ✅ **Search** by name and description
+- ✅ **Filter** by category
+- ✅ View price & stock availability
+- ✅ Smart cart system:
+  - Add items to cart
+  - Update quantities
+  - Remove items
+  - Real-time total price calculation
+- ✅ Checkout with order confirmation
+- ✅ Print order receipts
 
-Testing
+### 🛠️ **Admin Features**
+- ✅ Protected admin dashboard
+- ✅ **Create** new sweets with images
+- ✅ **Edit** existing sweet details
+- ✅ **Delete** sweets with confirmation
+- ✅ Inventory management (track quantities)
+- ✅ Form validation with error messages
+- ✅ Image URL support with live preview
 
-AI Usage Policy & Git Workflow
+---
 
-Future Improvements
+## 🏗️ Tech Stack
 
-License
+| Category | Technology |
+|----------|------------|
+| **Framework** | React 18+ with Vite |
+| **Styling** | Tailwind CSS v3 |
+| **Routing** | React Router DOM v6 |
+| **HTTP Client** | Axios |
+| **Icons** | Lucide React |
+| **State Management** | React Context API |
+| **Testing** | Vitest + React Testing Library |
+| **Design** | Modern Blue/Indigo/Slate Color System |
 
-Features
-Customer
-Register and login with email and password.
+---
 
-View all available sweets in a responsive, card-based grid.
+## 📁 Project Structure
 
-Search sweets by name and description.
-
-Filter sweets by category (e.g., Traditional, Special, etc.).​
-
-See price and remaining quantity for each sweet.​
-
-“Add to Cart” button:
-
-Enabled when quantity > 0.
-
-Disabled and labeled “Out of Stock” when quantity === 0.
-
-Cart summary with list of items and computed total price.
-
-Admin
-Login as an admin user.
-
-Access a protected Admin Panel route.
-
-View all sweets in a grid.
-
-Create new sweets with:
-
-Name
-
-Description
-
-Category
-
-Price
-
-Quantity (must be a non‑negative integer)
-
-Optional emoji and image URL
-
-Edit existing sweets (update all fields).
-
-Delete sweets.
-
-Form validation and error messages when backend validation fails (e.g., invalid quantity).
-
-Tech Stack
-Frontend Framework: React (with Vite)
-
-Styling: Tailwind CSS v3
-
-Routing: React Router DOM
-
-HTTP Client: Axios
-
-Icons: Lucide React
-
-State Management: React Context (custom AuthContext)
-
-Testing: Vitest + React Testing Library (configured, tests can be added)
-
-Project Structure
-bash
+```
 src/
-  components/
-    Navbar.jsx
-    ProtectedRoute.jsx
-    SweetCard.jsx
-  context/
-    AuthContext.jsx
-  pages/
-    Login.jsx
-    Register.jsx
-    Dashboard.jsx
-    Admin.jsx
-  services/
-    api.js
-  test/
-    setup.js
-  App.jsx
-  main.jsx
-AuthContext.jsx – Handles authentication state and exposes user, isAuthenticated, login, logout.
+├── components/
+│   ├── Navbar.jsx          # Navigation bar with cart badge
+│   ├── ProtectedRoute.jsx  # Route guard for auth & admin
+│   └── SweetCard.jsx       # Reusable sweet card component
+├── context/
+│   ├── AuthContext.jsx     # Authentication state management
+│   └── CartContext.jsx     # Shopping cart state management
+├── pages/
+│   ├── Login.jsx           # User login page
+│   ├── Register.jsx        # User registration page
+│   ├── Dashboard.jsx       # Customer sweet browsing
+│   ├── Admin.jsx           # Admin inventory management
+│   ├── Cart.jsx            # Shopping cart view
+│   └── Checkout.jsx        # Order confirmation
+├── services/
+│   └── api.js              # Axios instance & API endpoints
+├── App.jsx                 # Main router configuration
+└── main.jsx                # React entry point
+```
 
-api.js – Axios instance with base URL, auth header interceptor, and authAPI / sweetsAPI.
+---
 
-ProtectedRoute.jsx – Guards routes for authenticated users and admin-only access.
+## 🚀 Quick Start
 
-SweetCard.jsx – Reusable sweet card with dual modes (customer: purchase, admin: edit/delete).
+### Prerequisites
+- Node.js 16+
+- Backend server running on `http://localhost:4000`
+- MongoDB connected to backend
 
-Dashboard.jsx – Customer-facing sweets listing with search, filter, and cart.
+### Installation
 
-Admin.jsx – Admin-facing CRUD interface.
+```bash
+# Navigate to frontend folder
+cd sweet-shop-frontend
 
-Backend Setup
-This frontend expects the Sweet Shop Management System backend running locally on port 4000 with MongoDB configured.
-
-From the backend project directory:
-
-bash
-npm install
-npm run dev   # or equivalent command to start the server
-By default, the backend should expose routes such as:
-
-POST /api/auth/login
-
-POST /api/auth/register
-
-GET /api/sweets
-
-POST /api/sweets
-
-PUT /api/sweets/:id
-
-DELETE /api/sweets/:id​
-
-Seeding Admin User & Sweets
-The backend includes a seed.js script that:
-
-Connects to MongoDB via MONGODB_URI.
-
-Clears existing User and Sweet collections.
-
-Creates an admin user:
-
-Email: admin@sweets.com
-
-Password: AdminPass123!
-
-Role: admin
-
-Inserts sample sweets:
-
-Gulab Jamun (quantity: 20, price: 50)
-
-Rasgulla (quantity: 15, price: 40)
-
-Kaju Barfi (quantity: 10, price: 200)​
-
-Run the seed script (from backend folder):
-
-bash
-node seed/seed.js    # or the correct path, e.g., node seed.js
-Note: Running this script will clear existing users and sweets and replace them with the seeded data.​
-
-Frontend Setup
-From the frontend project directory:
-
-bash
 # Install dependencies
 npm install
 
 # Start development server
 npm run dev
-The app will run at:
+```
 
-Frontend: http://localhost:3000
+The app will run at: **http://localhost:3000**
 
-Backend (expected): http://localhost:4000
+### Backend Setup
 
-Environment & API Config
-The frontend uses a fixed base URL pointing to the backend:
+Ensure your backend is running on port 4000 with:
+- `POST /api/auth/login`
+- `POST /api/auth/register`
+- `GET /api/sweets`
+- `POST /api/sweets`
+- `PUT /api/sweets/:id`
+- `DELETE /api/sweets/:id`
 
-js
+---
+
+## 📚 Documentation
+
+### Authentication Flow
+
+#### Admin Login
+```
+1. Run backend seed script: node seed/seed.js
+2. Visit http://localhost:3000/login
+3. Login with:
+   - Email: admin@sweets.com
+   - Password: AdminPass123!
+4. Redirected to Dashboard
+5. Admin Panel link appears in navbar
+```
+
+#### Customer Registration
+```
+1. Visit http://localhost:3000/register
+2. Fill in: Name, Email, Password
+3. Select "Customer" as role
+4. After registration, automatically logged in
+5. Redirected to Dashboard
+```
+
+### Environment Configuration
+
+Update API base URL in `src/services/api.js`:
+
+```javascript
 // src/services/api.js
-import axios from 'axios';
-
 const API_BASE_URL = 'http://localhost:4000/api';
+```
 
-const api = axios.create({
-  baseURL: API_BASE_URL,
-  headers: { 'Content-Type': 'application/json' },
-});
+If your backend runs on a different port, update this value.
 
-// Attach JWT token from localStorage if present
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
-  if (token) config.headers.Authorization = `Bearer ${token}`;
-  return config;
-});
+---
 
-export const authAPI = {
-  login: (credentials) => api.post('/auth/login', credentials),
-  register: (userData) => api.post('/auth/register', userData),
-};
+## 🎨 Color System
 
-export const sweetsAPI = {
-  getAll: () => api.get('/sweets'),
-  getById: (id) => api.get(`/sweets/${id}`),
-  create: (data) => api.post('/sweets', data),
-  update: (id, data) => api.put(`/sweets/${id}`, data),
-  delete: (id) => api.delete(`/sweets/${id}`),
-};
+The application uses a modern professional design:
 
-export default api;
-If the backend URL or port changes, update API_BASE_URL accordingly.
+| Element | Color |
+|---------|-------|
+| Primary | Blue-600 / Indigo-600 |
+| Secondary | Blue-700 / Indigo-700 |
+| Neutral | Slate-50 to Slate-900 |
+| Success | Green-600 |
+| Error | Red-500 / Red-700 |
+| Background | Gradient: Slate-50 → White → Blue-50 |
 
-Usage Guide
-Authentication Flow
-Admin Login
+---
 
-Run the backend seed script to create the default admin.​
+## 📖 Usage Guide
 
-Go to http://localhost:3000/login.
+### Customer Dashboard
+- **View Sweets**: Grid of all available items with images
+- **Search**: Filter by sweet name
+- **Category Filter**: Dropdown to filter by type
+- **Add to Cart**: Purchase sweets (enabled when stock > 0)
+- **View Cart**: Click cart icon in navbar
+- **Checkout**: Complete purchase and view confirmation
 
-Login with:
+### Admin Panel
+- **Access**: Click "Admin Panel" link in navbar (admin only)
+- **Add Sweet**: 
+  - Click "Add Sweet" button
+  - Fill: Name, Category, Price, Quantity, Image URL
+  - Submit to create
+- **Edit Sweet**: Click "Edit" on any card, modify, submit
+- **Delete Sweet**: Click "Delete", confirm in dialog
+- **View Preview**: Image preview shows when entering URL
 
-Email: admin@sweets.com
+### Cart & Checkout
+- **View Items**: Click cart icon (shows badge with count)
+- **Update Quantity**: Increase/decrease per item
+- **Remove Item**: Delete button removes from cart
+- **Checkout**: Enter delivery address, select payment method
+- **Confirm Order**: Review order summary and place order
+- **Print Receipt**: Print order confirmation
 
-Password: AdminPass123!
+---
 
-After login, you are redirected to the Dashboard.
+## 🧪 Testing
 
-The navbar shows an Admin indicator and an “Admin Panel” link (visible only for admin role).
-
-Customer Registration & Login
-
-Go to http://localhost:3000/register.
-
-Fill in name, email, password, and choose customer as role.
-
-After successful registration, you are logged in and redirected to Dashboard.
-
-Customers do not see the Admin Panel link.
-
-Customer Dashboard
-The Dashboard fetches sweets from /api/sweets on load and displays them in a responsive grid.​
-
-Search:
-
-Filters sweets by name and (optionally) description.
-
-Category Filter:
-
-Dropdown generated from distinct categories in the sweets list plus All.
-
-Sweet Card:
-
-Shows:
-
-Emoji (if set) or a default candy emoji.
-
-Name and short description.
-
-Price (from price field).
-
-Remaining stock (from quantity field).​
-
-“Add to Cart”:
-
-Enabled when quantity > 0.
-
-Disabled and labeled “Out of Stock” when quantity === 0.
-
-Cart Summary:
-
-Fixed card in the corner when there are items.
-
-Shows items with name, quantity, and line total.
-
-Displays computed total price.
-
-Admin Panel
-Accessible at /admin only for authenticated admin users (protected route).
-
-Sweets List:
-
-Same underlying data as Dashboard, but cards show Edit and Delete buttons.
-
-Add / Edit Sweet Form:
-
-Fields:
-
-Name (required)
-
-Category (optional but recommended)
-
-Description (optional)
-
-Price (required, numeric)
-
-Stock Quantity (required; converted to integer quantity for backend)
-
-Emoji (optional)
-
-Image URL (optional)
-
-On submit:
-
-For new sweet: calls POST /api/sweets.
-
-For edit: calls PUT /api/sweets/:id.
-
-Form performs basic validation and surfaces backend validation errors (e.g., “Quantity must be a non-negative integer”).
-
-Delete Sweet:
-
-Asks for confirmation via window.confirm.
-
-On confirm, calls DELETE /api/sweets/:id and removes from list.
-
-Testing
-The project is configured with Vitest and React Testing Library.
-
-Global test config is in vite.config.js under test section.
-
-Setup file is src/test/setup.js (includes Jest DOM matchers).
-
-Available script:
-
-bash
+Run tests with:
+```bash
 npm test
-You can add component/page tests under src/**/*.test.jsx.
+```
 
-AI Usage Policy & Git Workflow
-This project uses AI tools as part of the development workflow. For every commit where an AI assistant contributed (e.g., generating boilerplate, helping with tests, suggesting refactors), add it as a co-author:
+Configuration files:
+- `vite.config.js` - Test setup
+- `src/test/setup.js` - Test environment
 
-Example commit message:
+Add tests in `src/**/*.test.jsx` format.
 
-bash
-git commit -m "feat: implement dashboard and admin UI
+---
 
-Used an AI assistant to generate initial layout and refine state management.
+## 🔮 Future Improvements
 
-Co-authored-by: Perplexity AI <perplexity@users.noreply.github.com>"
+- [ ] Add full test coverage (Auth, Dashboard, Admin CRUD)
+- [ ] Implement backend order persistence
+- [ ] Add pagination/infinite scroll for large catalogs
+- [ ] Enhance error boundaries for network failures
+- [ ] Add user profile and order history pages
+- [ ] Implement payment gateway integration
+- [ ] Add product reviews and ratings
+- [ ] Mobile app version with React Native
+- [ ] Multi-language support (i18n)
+- [ ] Dark mode theme
+
+---
+
+## 📝 AI Usage & Attribution
+
+This project uses AI tools for development. When committing with AI assistance, use:
+
+```bash
+git commit -m "feat: add dashboard search and filter
+
+Implemented customer sweet browsing with search and category filtering.
+
+Co-authored-by: GitHub Copilot <noreply@github.com>"
+```
+
 This maintains transparency and proper attribution.
 
-Future Improvements
-Add full test coverage for:
+---
 
-Auth flow (Login/Register components)
+## 📄 License
 
-Dashboard filtering logic
-
-Admin CRUD operations
-
-Implement persistent cart with backend or localStorage.
-
-Add pagination or infinite scroll for large sweets lists.
-
-Enhance error boundary handling for network and render errors.
-
-Add role management UI (promote/demote users) on the admin side.
-
-License
 This project respects all relevant copyrights and intellectual property.
-Adapt or extend the license section to match your backend repository’s license.
 
+Adapt or extend the license section to match your backend repository's license.
+
+---
+
+<div align="center">
+
+**Made with ❤️ for sweet lovers**
+
+[⬆ Back to top](#-sweet-shop-management-system--frontend)
+
+</div>
